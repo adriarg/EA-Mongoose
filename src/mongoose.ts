@@ -1,40 +1,62 @@
 import mongoose from 'mongoose';
-import { UserModel, IUser } from './user.js';
+import { DroneModel, IDrone } from './drone.js';
+import { MissionModel, IMission } from './mission.js';
 
 async function main() {
-  mongoose.set('strictQuery', true); // Mantiene el comportamiento actual
+  mongoose.set('strictQuery', true); 
 
   await mongoose.connect('mongodb://127.0.0.1:27017/test')
-  .then(() => console.log('Conectado a MongoDB'))
-  .catch(err => console.error('Error al conectar:', err));
+    .then(() => console.log('Connectat a MongoDB'))
+    .catch(err => console.error('Error en connectar:', err));
 
-  const user1:  IUser = {
-    "name": 'Bill',
-    "email": 'bill@initech.com',
-    "avatar": 'https://i.imgur.com/dM7Thhn.png'
-  };
+  // CRUD per a Drone
+  console.log("\nOPERACIONS AMB DRON\n");
 
-  console.log("user1", user1); 
-  const newUser= new UserModel(user1);
-  const user2: IUser = await newUser.save();
-  console.log("user2",user2);
+  // Crear un nou dron
+  const nouDron = new DroneModel({ name: "Phantom 4", type: "Quadcopter" });
+  const dronGuardat = await nouDron.save();
+  console.log("Dron creat:", dronGuardat);
 
-  // findById devuelve un objeto usando el _id.
-  const user3: IUser | null = await UserModel.findById(user2._id);
-  console.log("user3",user3);
+  // Llegir un dron per ID
+  const dronTrobat = await DroneModel.findById(dronGuardat._id);
+  console.log("Dron trobat:", dronTrobat);
 
-  // findOne devuelve un objeto usando un filtro.
-  const user4: IUser | null = await UserModel.findOne({name: 'Bill'});
-  console.log("user4",user4);
+  // Actualitzar el nom del dron
+  const dronActualitzat = await DroneModel.findByIdAndUpdate(
+    dronGuardat._id,
+    { name: "DJI Mavic Air" },
+    { new: true } // Retorna el document actualitzat
+  );
+  console.log("Dron actualitzat:", dronActualitzat);
 
-  // Partial<IUser> Indica que el objeto puede tener solo algunos campos de IUser.
-  // select('name email') solo devuelve name y email.
-  // lean() devuelve un objeto plano de JS en lugar de un documento de Mongoose.
-  const user5: Partial<IUser> | null  = await UserModel.findOne({ name: 'Bill' })
-    .select('name email').lean();
-  console.log("user5",user5);
+  // Esborrar un dron
+  const dronEsborrat = await DroneModel.findByIdAndDelete(dronGuardat._id);
+  console.log("Dron esborrat:", dronEsborrat);
+
+  // CRUD per a Missió
+  console.log("\nOPERACIONS AMB MISSIÓ\n");
+
+  // Crear una nova missió
+  const novaMissio = new MissionModel({ name: "Reconaixement", description: "Examinar la zona per obstacles." });
+  const missioGuardada = await novaMissio.save();
+  console.log("Missió creada:", missioGuardada);
+
+  // Llegir una missió per ID
+  const missioTrobada = await MissionModel.findById(missioGuardada._id);
+  console.log("Missió trobada:", missioTrobada);
+
+  // Actualitzar la descripció de la missió
+  const missioActualitzada = await MissionModel.findByIdAndUpdate(
+    missioGuardada._id,
+    { description: "Actualitzat: Escaneja tot el sector." },
+    { new: true } // Retorna el document actualitzat
+  );
+  console.log("Missió actualitzada:", missioActualitzada);
+
+  // Esborrar una missió
+  const missioEsborrada = await MissionModel.findByIdAndDelete(missioGuardada._id);
+  console.log("Missió esborrada:", missioEsborrada);
 }
 
-main()
-
-    
+// Executem la funció principal
+main();

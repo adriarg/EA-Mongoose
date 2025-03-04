@@ -1,5 +1,11 @@
 # EA Node.js + TypeScript + Mongoose
 
+## Referències
+
+Videos de l'assignatura --> https://atenea.upc.edu/mod/page/view.php?id=4903414
+Repositori Fork
+Populate --> https://mongoosejs.com/docs/populate.html
+
 ## Requisitos Previos
 
 Asegúrate de tener instalados los siguientes programas en tu sistema:
